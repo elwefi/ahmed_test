@@ -1,0 +1,31 @@
+%div{'ng-app' => 'MyApp'}
+  .test{ :'ng-controller' => "PricingCtrl" }
+    #resa{ :'ng-init' => "list_cities()"}
+
+    .row
+      .col-md-4.col-md-offset-4
+        %select.form-control{ :"ng-change" => "change_city(select_city['id'])", :"ng-model" => "select_city", :'ng-options' => "city as city.name for city in all_cities "}
+        .alert.alert-warning.product-empty{:'ng-if'=> "products.length == 0" ,:role => "alert"}
+          %h2 There is no saving for the selected city
+    %br
+    %div{:'ng-if'=> "products.length != 0"}
+      %table.table.table-bordered.table-hover
+        %thead
+          %tr
+            %th Product
+            %th{:'ng-repeat' => "city in cities"}
+              {{city.name}}
+        %tbody
+          %tr{"ng-repeat" => "product in products"}
+            %td {{product.name}}
+            %td{:'ng-repeat' => "city in cities", :class => '{{saving_color(pricings["[" + product["id"] + ", " + city["id"] + "]"])}}' }
+              {{pricings["[" + product['id'] + ', ' + city['id'] + "]"]}}
+      .pull-right
+        %nav
+          %ul.pagination
+            %li{"ng-class" => "prevPageDisabled()"}
+              %a{:href => "", "ng-click" => "prevPage()"} « Prev
+            %li{"ng-class" => "{active: n == currentPage}", "ng-click" => "setPage(n)", "ng-repeat" => "n in range()"}
+              %a{:href => "#"} {{n+1}}
+            %li{"ng-class" => "nextPageDisabled()"}
+              %a{:href => "", "ng-click" => "nextPage()"} Next »
